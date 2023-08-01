@@ -15,28 +15,20 @@ To get started with development, the following tools must be installed:
 3. Postgresql
 
 ### NestJS
-To installed NestJS, install it using npm:
-```
-npm i -g nest-cli
-```
+To installed NestJS, run the cli command: `npm i -g nest-cli`
+
 #### Reference Link:
 - [NestJS Introduction](https://docs.nestjs.com)
 
 ### Commitizen
-To install Commitizen, install it using Homebrew. 
-```
-brew install commitizen
-
-```
+There are multiple ways to install Commitizen. For this guide, Homebrew will be used to install the packages: `brew install commitizen`
 
 #### Reference Link:
 - [Commitizen Introduction](https://commitizen-tools.github.io/commitizen/)
 
-### Commitizen
-There are multiple ways to install PostgreSQL. For this guide, this will be using Homebrew to install.
-```
-brew install postgresql@15
-```
+### PostgreSQL
+There are multiple ways to install PostgreSQL. For this guide, Homebrew will be used to install the packages: `brew install postgresql@15`
+
 
 #### Reference Link:
 - [PostgeSQL Download](https://www.postgresql.org/download/macosx/)
