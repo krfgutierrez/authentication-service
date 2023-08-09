@@ -1,14 +1,16 @@
 import { Model, Column, DataType, Table, HasMany } from 'sequelize-typescript';
 import TransactionCode from './transaction-code.model';
+import { INewAccount, IAccount } from '@interfaces/account/account.interface';
 
 @Table({
+  tableName: 'account',
   timestamps: true,
   createdAt: 'create_at',
   updatedAt: 'updated_at',
   deletedAt: 'deleted_at',
   underscored: true,
 })
-export default class User extends Model {
+export class AccountModel extends Model<IAccount, INewAccount> {
   @Column({
     type: DataType.UUID,
     primaryKey: true,

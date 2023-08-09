@@ -26,6 +26,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/sequelize": "^10.0.0",
     "@types/js-yaml": "^4.0.5",
+    "class-validator": "^0.14.0",
     "js-yaml": "^4.1.0",
     "pg": "^8.11.2",
     "pg-hstore": "^2.3.4",

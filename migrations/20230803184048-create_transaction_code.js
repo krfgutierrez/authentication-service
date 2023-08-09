@@ -9,10 +9,10 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      user_id: {
+      account_id: {
         type: Sequelize.DataTypes.UUID,
         references: {
-          model: 'users',
+          model: 'account',
           key: 'id',
         }
       },
