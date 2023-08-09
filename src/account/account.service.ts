@@ -25,21 +25,21 @@ export class AccountService {
 
   async findOne(account: LoginAccountDto): Promise<Partial<IAccount>> {
     const {username, password} = account;
-    const res = await this.repository.findOne({
+    const response = await this.repository.findOne({
       where: {
         username
       }
     });
-    if (!res) {
+    if (!response) {
       return null;
     }
-    const result = await compare(password, res.password);
+    const result = await compare(password, response.password);
     if (!result) {
       return null;
     }
     return {
-      id: res.id,
-      username: res.username,
+      id: response.id,
+      username: response.username,
     }
   }
 

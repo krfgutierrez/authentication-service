@@ -19,8 +19,8 @@ export class AccountController {
   @Post('/login')
   @HttpCode(200)
   async login(@Body() account: LoginAccountDto): Promise<Partial<IAccount>> {
-    const res = await this.service.findOne(account);
-    if (!res) {
+    const response = await this.service.findOne(account);
+    if (!response) {
       throw new UnauthorizedException('Invalid username and/or password.');
     }
     const { id, username } = res;
