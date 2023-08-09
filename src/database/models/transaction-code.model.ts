@@ -1,5 +1,6 @@
 import { Model, Column, DataType, Table, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import User from './user.model';
+import { AccountModel } from './account.model';
+
 
 @Table({
   timestamps: true,
@@ -14,14 +15,14 @@ export default class TransactionCode extends Model {
   })
   id: number;
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => AccountModel)
   @Column({
     type: DataType.UUID
   })
-  userId: string;
+  accountId: string;
 
-  @BelongsTo(() => User, 'user_id')
-  user: User
+  @BelongsTo(() => AccountModel, 'account_id')
+  account: AccountModel
 
   @Column({
     type: DataType.TEXT,
