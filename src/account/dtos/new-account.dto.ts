@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsStrongPassword } from 'class-validator';
 export default class NewAccountDto {
   @IsNotEmpty()
   @IsEmail({})
-  readonly username: String;
+  readonly username: string;
 
   @IsNotEmpty()
   @IsStrongPassword({
@@ -13,5 +13,5 @@ export default class NewAccountDto {
     minSymbols: 1,
     minUppercase: 1
   })
-  readonly password: String;
+  readonly password: string;
 }
