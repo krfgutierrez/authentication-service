@@ -23,7 +23,7 @@ export class AccountController {
     if (!response) {
       throw new UnauthorizedException('Invalid username and/or password.');
     }
-    const { id, username } = res;
+    const { id, username } = response;
     return { id, username };
   }
 
