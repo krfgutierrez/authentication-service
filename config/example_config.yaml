@@ -1,0 +1,17 @@
+database:
+  host: localhost
+  port: 5432
+  name: my_database
+  enable_log: true
+  username: username
+  password: password
+security:
+  password:
+    salt: 10
+  authentication:
+    access_token:
+      duration: "5m"
+      secret: "jwt_secret"
+    refresh_token:
+      duration: "10m"
+      secret: "jwt_secret"
