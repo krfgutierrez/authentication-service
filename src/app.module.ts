@@ -7,6 +7,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { AccountModule } from './account/account.module';
 import { AccountModel } from 'database/models/account.model';
 import TransactionCode from 'database/models/transaction-code.model';
+import IConfigDatabase from '@interfaces/config/config_database';
 
 @Module({
   imports: [
@@ -17,14 +18,15 @@ import TransactionCode from 'database/models/transaction-code.model';
     SequelizeModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
+        const database = config.get<IConfigDatabase>('database');
         return {
           dialect: 'postgres',
-          "host": "localhost",
-          "port": 5432,
-          "database": "portfolio",
-          "username": "krgdev",
-          "password": "krgdevpass",
-          logging: config.get<boolean>('database.enableLogging'),
+          "host": database.host,
+          "port": database.port,
+          "database": database.name,
+          "username": database.username,
+          "password": database.password,
+          logging: database.enable_log,
           underscore: true,
           models: [
             AccountModel,

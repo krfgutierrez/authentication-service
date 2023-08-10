@@ -3,6 +3,7 @@ import { Body, Controller, HttpCode, Post, UnauthorizedException } from '@nestjs
 import NewAccountDto from './dtos/new-account.dto';
 import { AccountService } from './account.service';
 import LoginAccountDto from './dtos/login-account.dto';
+import ISession from './interfaces/session';
 
 @Controller('account')
 export class AccountController {
@@ -18,13 +19,12 @@ export class AccountController {
 
   @Post('/login')
   @HttpCode(200)
-  async login(@Body() account: LoginAccountDto): Promise<Partial<IAccount>> {
+  async login(@Body() account: LoginAccountDto): Promise<Partial<ISession>> {
     const response = await this.service.findOne(account);
     if (!response) {
       throw new UnauthorizedException('Invalid username and/or password.');
     }
-    const { id, username } = response;
-    return { id, username };
+    return response;
   }
 
 }
