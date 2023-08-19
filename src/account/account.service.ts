@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import ms from 'ms';
 import addToDate from 'date-fns/add';
+import { v4 as uuidV4 } from 'uuid'
 
 import NewAccountDto from './dtos/new-account.dto';
 import { AccountModel } from 'database/models/account.model';
@@ -10,13 +11,17 @@ import LoginAccountDto from './dtos/login-account.dto';
 import { ConfigService } from '@nestjs/config';
 import { compare, genSalt, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
-import ISession from './interfaces/session';
+import ISession, { INewSession } from '@interfaces/session/session.interface';
 import { IConfigSecurityAuthentication, IConfigSecurityPassword } from '@interfaces/config/config_security';
+import SessionModel from 'database/models/session.model';
+import { AES } from 'crypto-js';
 
 @Injectable()
 export class AccountService {
 
-  constructor(@InjectModel(AccountModel) private repository: typeof AccountModel, private config: ConfigService) { }
+  constructor(@InjectModel(AccountModel) private accountRepo: typeof AccountModel,
+    @InjectModel(SessionModel) private sessionRepo: typeof SessionModel,
+    private config: ConfigService) { }
 
   async create(account: NewAccountDto): Promise<IAccount> {
     const { password } = account;
@@ -24,31 +29,33 @@ export class AccountService {
     const salt = await genSalt(saltRound);
     const hashedPassword = await hash(password, salt);
 
-    const response = await this.repository.create({ ...account, password: hashedPassword, });
+    const response = await this.accountRepo.create({ ...account, password: hashedPassword, });
     return response.toJSON();
   }
 
-  async findOne(account: LoginAccountDto): Promise<Partial<ISession>> {
-    const {username, password} = account;
-    const response = await this.repository.findOne({
+  async findOne(accountDto: LoginAccountDto): Promise<Partial<ISession>> {
+    const { username, password } = accountDto;
+    const account: AccountModel | null = await this.accountRepo.findOne({
       where: {
         username
       }
     });
-    if (!response) {
+    if (!account) {
       return null;
     }
-    const result = await compare(password, response.password);
-    if (!result) {
+    const passwordMatched: boolean = await compare(password, account.password);
+    if (!passwordMatched) {
       return null;
     }
     const config = this.config.get<IConfigSecurityAuthentication>('security.authentication');
     const [atExpiresAt, rtExpiresAt] = this.generateTokenExpiration(new Date(), config);
+    const sessionId = uuidV4();
     // Create a access token JWT 
     const accessToken = this.generateJwtToken({
       payload: {
-        id: response.id,
-        username: response.username,
+        sid: sessionId,
+        aid: account.id,
+        u: account.username,
       },
       expiresIn: atExpiresAt,
       secret: config.access_token.secret,
@@ -56,18 +63,26 @@ export class AccountService {
     // Create a refresh token JWT 
     const refreshToken = this.generateJwtToken({
       payload: {
-        id: response.id,
-        username: response.username,
+        sid: sessionId,
+        aid: account.id,
+        u: account.username,
       },
       expiresIn: rtExpiresAt,
       secret: config.refresh_token.secret,
     },);
-
-    return {
+    // TODO: Encrypt access token and r efresh token before storing in the database.
+    await this.encryptAndSaveSession({
       accessToken,
       refreshToken,
-      // getTime() will return a milliseconds. It is divided by 100 to get the equivalent in seconds.
-      expiresAt: atExpiresAt.getTime() / 100
+      id: sessionId,
+      accountId: account.id,
+      expiresAt: atExpiresAt,
+    })
+    return {
+      id: sessionId,
+      accessToken,
+      refreshToken,
+      expiresAt: atExpiresAt,
     }
   }
 
@@ -114,6 +129,18 @@ export class AccountService {
       expiresIn: Math.floor(expiresIn.getTime() / 100),
     });
     return token;
+  }
+
+  private async encryptAndSaveSession(session: INewSession): Promise<void> {
+    const secret: string = this.config.get<string>('security.session.encryption_secret');
+    const encryptedAT = AES.encrypt(session.accessToken, secret).toString();
+    const encryptedRT = AES.encrypt(session.refreshToken, secret).toString();
+    await this.sessionRepo.create({
+      ...session,
+      accessToken: encryptedAT,
+      refreshToken: encryptedRT,
+      expiresAt: session.expiresAt,
+    })
   }
 
 }

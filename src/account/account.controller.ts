@@ -3,7 +3,7 @@ import { Body, Controller, HttpCode, Post, UnauthorizedException } from '@nestjs
 import NewAccountDto from './dtos/new-account.dto';
 import { AccountService } from './account.service';
 import LoginAccountDto from './dtos/login-account.dto';
-import ISession from './interfaces/session';
+import ISession from '@interfaces/session/session.interface';
 
 @Controller('account')
 export class AccountController {
