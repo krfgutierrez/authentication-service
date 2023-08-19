@@ -3,7 +3,7 @@ import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize
 import { AccountModel } from "./account.model";
 
 @Table({
-  tableName: 'session',
+  tableName: 'sessions',
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at',

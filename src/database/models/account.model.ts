@@ -4,7 +4,7 @@ import { INewAccount, IAccount } from '@interfaces/account/account.interface';
 import SessionModel from './session.model';
 
 @Table({
-  tableName: 'account',
+  tableName: 'accounts',
   timestamps: true,
   createdAt: 'create_at',
   updatedAt: 'updated_at',
