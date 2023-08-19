@@ -3,6 +3,7 @@ import { AccountModel } from './account.model';
 
 
 @Table({
+  tableName: 'transaction_codes',
   timestamps: true,
   createdAt: 'create_at',
   updatedAt: 'updated_at',
