@@ -1,9 +1,10 @@
 import { Model, Column, DataType, Table, HasMany } from 'sequelize-typescript';
 import TransactionCode from './transaction-code.model';
 import { INewAccount, IAccount } from '@interfaces/account/account.interface';
+import SessionModel from './session.model';
 
 @Table({
-  tableName: 'account',
+  tableName: 'accounts',
   timestamps: true,
   createdAt: 'create_at',
   updatedAt: 'updated_at',
@@ -39,4 +40,7 @@ export class AccountModel extends Model<IAccount, INewAccount> {
 
   @HasMany(() => TransactionCode)
   transactionCode: TransactionCode[]
+
+  @HasMany(() => SessionModel)
+  sessions: SessionModel[];
 }

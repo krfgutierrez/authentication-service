@@ -8,6 +8,8 @@ import { AccountModule } from './account/account.module';
 import { AccountModel } from 'database/models/account.model';
 import TransactionCode from 'database/models/transaction-code.model';
 import IConfigDatabase from '@interfaces/config/config_database';
+import SessionModel from 'database/models/session.model';
+import { UserModel } from 'database/models/user.model';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import IConfigDatabase from '@interfaces/config/config_database';
           models: [
             AccountModel,
             TransactionCode,
+            SessionModel,
+            UserModel,
           ],
         };
       }

@@ -1,6 +1,10 @@
+
 # Authentication Service
 
 The Authentication Service is responsible for managing accounts by providing APIs for registration, logging in, and resetting forgotten passwords.
+
+### Important!
+This project is currently in-progress.
 
 ## Features
 1. Registration
