@@ -22,6 +22,12 @@
       "@interfaces/*": [
         "interfaces/*"
       ],
+      "@account/*": [
+        "account/*",
+      ],
+      "@database/*": [
+        "database/*"
+      ]
     }
   }
 }
