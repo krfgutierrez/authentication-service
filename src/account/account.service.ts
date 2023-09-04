@@ -5,7 +5,7 @@ import addToDate from 'date-fns/add';
 import { v4 as uuidV4 } from 'uuid'
 
 import NewAccountDto from './dtos/new-account.dto';
-import { AccountModel } from 'database/models/account.model';
+import { AccountModel } from '@database/models/account.model';
 import { IAccount } from '@interfaces/account/account.interface';
 import LoginAccountDto from './dtos/login-account.dto';
 import { ConfigService } from '@nestjs/config';
@@ -13,10 +13,9 @@ import { compare, genSalt, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import ISession, { INewSession } from '@interfaces/session/session.interface';
 import { IConfigSecurityAuthentication, IConfigSecurityPassword } from '@interfaces/config/config_security';
-import SessionModel from 'database/models/session.model';
+import SessionModel from '@database/models/session.model';
 import { AES } from 'crypto-js';
-import { UserModel } from 'database/models/user.model';
-import { IUser } from '@interfaces/user/user.interface';
+import { UserModel } from '@database/models/user.model';
 
 @Injectable()
 export class AccountService {
@@ -93,7 +92,7 @@ export class AccountService {
           u: account.username,
         },
         expiresIn: atExpiresAt,
-        secret: config.access_token.secret,
+        secret: config.jwt_secret,
       });
       // Create a refresh token JWT 
       const refreshToken = this.generateJwtToken({
@@ -103,7 +102,7 @@ export class AccountService {
           u: account.username,
         },
         expiresIn: rtExpiresAt,
-        secret: config.refresh_token.secret,
+        secret: config.jwt_secret,
       },);
       // TODO: Encrypt access token and r efresh token before storing in the database.
       await this.encryptAndSaveSession({
@@ -160,7 +159,6 @@ export class AccountService {
     payload: Record<string, any>, expiresIn: Date, secret?: string,
   }): string {
     const { payload, secret, expiresIn } = params;
-    
     const token = sign(payload, secret, {
       // getTime() will return a milliseconds. It is divided by 100 to get the equivalent in seconds.
       expiresIn: Math.floor(expiresIn.getTime() / 100),
